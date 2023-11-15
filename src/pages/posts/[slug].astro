@@ -3,6 +3,7 @@ import { type CollectionEntry, getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import formatDate from "@/utils/formatDate";
 import Comments from "@/components/Comments.astro";
+import ReactComments from "@/components/Comments.tsx";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
@@ -31,6 +32,7 @@ const { Content } = await post.render();
     </header>
 
     <Content />
-    <Comments />
+    <!-- <Comments /> -->
+    <ReactComments client:idle />
   </main>
 </Layout>
