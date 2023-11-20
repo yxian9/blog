@@ -1,9 +1,8 @@
 ---
-import { type CollectionEntry, getCollection } from "astro:content";
-import Layout from "@/layouts/Layout.astro";
-import formatDate from "@/utils/formatDate";
-import Comments from "@/components/Comments.astro";
 import ReactComments from "@/components/Comments.tsx";
+import Layout from "@/layouts/BlogLayout.astro";
+import formatDate from "@/utils/formatDate";
+import { getCollection, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
@@ -19,11 +18,11 @@ type Props = {
 };
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content, headings } = await post.render();
 ---
 
-<Layout title={post.data.title} description={post.data.description}>
-  <main class="post mx-auto flex w-full max-w-prose flex-col gap-4">
+<Layout headings={headings}>
+  <main class="post mx-auto flex w-full max-w-max flex-col gap-4">
     <header role="presentation">
       <h1 class="text-md">
         {post.data.title} - {formatDate(post.data.publishedAt)}
@@ -32,7 +31,6 @@ const { Content } = await post.render();
     </header>
 
     <Content />
-    <!-- <Comments /> -->
     <ReactComments client:idle />
   </main>
 </Layout>

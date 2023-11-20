@@ -1,54 +1,42 @@
 ---
-title: "Setup nextflow on AWS"
+title: "Learning List"
 publishedAt: 2023-05-24
-description: "Lorem ipsum dolor sit amet consectetur et ultrices blandit neque ege"
-slug: "the-power-of-react-hooks"
+description: "Programming, Statistics, Bioinformatics"
+slug: "learningLists"
 isPublish: true
 ---
 
-## Vocesque meum remis est neque Neptunus monte
+## Programming
 
-Lorem markdownum nunc _adfuit_ fecisse, `quae pectus`, quod seu mortale suo
-Minerva iussit obortas. Favilla victa; alarum signis barbara, nec _sibi dentes_
-hostes?
+- [C Programming Language](https://s3-us-west-2.amazonaws.com/belllabs-microsite-dritchie/cbook/index.html)
+- [The Go Programming Language](https://www.gopl.io/)
+- [Fluent Python](https://www.fluentpython.com/)
+- [JavaScript: The Definitive Guide](https://davidflanagan.com/)
+- [Programming TypeScript](https://www.oreilly.com/library/view/programming-typescript/9781492037644/)
 
-## Corporibus Leucon
+## Data Science
 
-Quaeque viridis, pariter possit. Velatus Thetis, ab Buten, in et ite positis
-annis ut Troasque altaque. Ancaeus convertit conscia Phinea petis. Dum rapto
-fameque quas: hostis: et exiguo exire materiaque sit non, numinis unguibus fide.
-Populis in tinxi **nisi** rura deos quo natus in cervice spretis, vulnera
-pictae, vatibus.
+- [R for Data Science](https://r4ds.had.co.nz/)
+- [An Introduction to Statistical Learning](https://www.statlearning.com/)
+- [Hands On Data Analysis with Pandas](https://github.com/stefmolin/Hands-On-Data-Analysis-with-Pandas-2nd-edition)
+- [Python for Data Analysis](https://wesmckinney.com/book/)
+- [Learn PyTorch for Deep Learning](https://www.learnpytorch.io/)
+- [Practical Deep Learning for Coders](https://course.fast.ai/Resources/book.html)
 
-> Illi tenebras si vultum suae. Matrem iam: iniqua adire, tetigere meque,
-> cessant, gerebat.
+## Bioinformatics
 
-## Montes ignarus precor rogabam primus ridet sanguine
+### Next Generation Sequencing
 
-In vir indefessus et patrios veniam. Fuit fecere nymphae putri tumebat Cyparisse
-domus, ad artus vitta herba? Et gaudet pressum aeterna animam. Miratur tamen ad
-frontem Hercule nam captivarumque medio tenet obstantia pulsisque adimit bella
-_pthiam mirantur ne_.
+[Illumina Knowledge](https://knowledge.illumina.com/)
 
-> Lacertis et nomenque oracla exstabat: genitor nitor! Fluctus habes extinctum.
-> Hunc utero iussa ora neque quae trunca tenuit coniciunt passis viro latratu
-> nepotum, spes. Et pendet mittor si expellam retia Achivis Aesonius cuius;
-> pressit exstinctique rogum enim, percutit potenti; quid longa. Nostra animaque
-> genetrice viae, quam virus sermone in videri.
+Reference material for Illumina products and workflows, covering all Illumina Microarrays and every stage of Sequencing.
 
-## Rapit harundine vana
+[Single Cell Library Structure](https://github.com/Teichlab/scg_lib_structs)
 
-Noctis et et carpis corpus amplexus; imagine indignanda pedum sospes; cornua
-super **et simus**. Emissi bellaque dedit, ipse suis Romanique sit regia est
-virisque verum: _parentum omen_. Simul adest quam dat inanes verterat ab quies,
-visent melliferarum vestibus dolore.
+Collections of library structure and sequence of popular single cell genomic methods
 
-Vos illo in habet, ipse est suo fuit, solidissima invecta moverent [si] pericula
-ea pelle te quatiens proditus. Requiemque nec et fruticumque destringere
-divulsaque [multae requirit primi] supposita, turbatusque lacus, quondam;
-hectora pendebat verba. Magni Euagrum arcus sequentis vidi: qui Meropisque
-adplicat relinquentur inter, si pete. Magna constitit ore rediit et parentis
-pomaria lumina seque aura.
+### Bioinfo tool
 
-[multae requirit primi]: http://heu.io/
-[si]: http://infelixlucina.net/mutati
+[Nextflow Patterns](https://nextflow-io.github.io/patterns/)
+
+Some recurring implementation patterns used in Nextflow applications
