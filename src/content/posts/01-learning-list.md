@@ -8,8 +8,10 @@ isPublish: true
 
 ## Programming
 
-- [C Programming Language](https://s3-us-west-2.amazonaws.com/belllabs-microsite-dritchie/cbook/index.html)
-- [The Go Programming Language](https://www.gopl.io/)
+- [C Programming Language](https://s3-us-west-2.amazonaws.com/belllabs-microsite-dritchie/cbook/index.html) \
+  K&R, a must read classic one.
+- [The Go Programming Language](https://www.gopl.io/) \
+   C for the 21st century!
 - [Fluent Python](https://www.fluentpython.com/)
 - [JavaScript: The Definitive Guide](https://davidflanagan.com/)
 - [Programming TypeScript](https://www.oreilly.com/library/view/programming-typescript/9781492037644/)
