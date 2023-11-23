@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yxiang.dev/sitemap-index.xml
