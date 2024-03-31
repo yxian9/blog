@@ -85,7 +85,7 @@ class Solution:
             if rem in two_sum:
                 if i - two_sum[rem] >= 2:
                     return True
-            else:
+            else: ## need else to avoid overwrite first occurance
                 two_sum[rem] = i
         return False
 ```
@@ -122,6 +122,30 @@ class Solution:
             res.add(cur_sum)
         return False
 ```
+- 170&#46; Two Sum III - Data structure design
+```js
+class TwoSum {
+    arr: Map<number, number>
+    constructor() {
+        this.arr = new Map<number, number>()
+    }
+    add(number: number): void {
+        this.arr.set(number, (this.arr.get(number) || 0) + 1)
+    }
+    find(value: number): boolean {
+        for (const [key, freq] of this.arr) {
+            const diff = value - key
+            if (diff === key) {
+                if (freq > 1) return true
+                // return freq >1 incorrect, pre-return
+            } else {
+                if (this.arr.has(diff)) return true
+            }
+        }
+        return false
+    }
+```
+
 
 
 
