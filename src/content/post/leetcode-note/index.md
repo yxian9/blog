@@ -74,6 +74,57 @@ class Solution:
         return idx
 ```
 
+- 523&#46; Continuous Subarray Sum, the sum of the elements of the subarray is a multiple of k.
+```python
+    def checkSubarraySum(self, nums: List[int], k: int) -> bool:
+        pre = 0
+        two_sum = {0: -1} ## 
+        for i, v in enumerate(nums):
+            pre += v
+            rem  = pre % k
+            if rem in two_sum:
+                if i - two_sum[rem] >= 2:
+                    return True
+            else:
+                two_sum[rem] = i
+        return False
+```
+
+- 560&#46; Subarray Sum Equals K, the total number of continuous subarrays whose sum equals to k.
+```python
+    def subarraySum(self, nums: List[int], k: int) -> int:
+        pre = 0
+        dic = {0: 1}
+        res = 0
+        for v in nums:
+            pre += v
+            diff = pre -k
+            count += dic.get(diff, 0)
+            dic[pre] = dic.get(pre, 0) + 1
+        return count
+# or
+            if diff in dic:
+                count += dic[diff]
+            if pre in dic:
+                dic[pre] += 1
+            else:
+                dic[pre] = 1
+```
+
+- 2395&#46; subarray with equal sum
+```python
+    def findSubarrays(self, nums: List[int]) -> bool:
+        res = set()
+        for i in range(1, len(nums)):
+            cur_sum = nums[i] + nums[i-1]
+            if cur_sum in res:
+                return True
+            res.add(cur_sum)
+        return False
+```
+
+
+
 ### window 
 - 346&#46; Given a stream of integers and a window size, calculate the moving average. fixed window
 ```python
