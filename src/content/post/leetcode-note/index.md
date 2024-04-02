@@ -74,42 +74,7 @@ class Solution:
         return idx
 ```
 
-- 523&#46; Continuous Subarray Sum, the sum of the elements of the subarray is a multiple of k.
-```python
-    def checkSubarraySum(self, nums: List[int], k: int) -> bool:
-        pre = 0
-        two_sum = {0: -1} ## 
-        for i, v in enumerate(nums):
-            pre += v
-            rem  = pre % k
-            if rem in two_sum:
-                if i - two_sum[rem] >= 2:
-                    return True
-            else: ## need else to avoid overwrite first occurance
-                two_sum[rem] = i
-        return False
-```
 
-- 560&#46; Subarray Sum Equals K, the total number of continuous subarrays whose sum equals to k.
-```python
-    def subarraySum(self, nums: List[int], k: int) -> int:
-        pre = 0
-        dic = {0: 1}
-        res = 0
-        for v in nums:
-            pre += v
-            diff = pre -k
-            count += dic.get(diff, 0)
-            dic[pre] = dic.get(pre, 0) + 1
-        return count
-# or
-            if diff in dic:
-                count += dic[diff]
-            if pre in dic:
-                dic[pre] += 1
-            else:
-                dic[pre] = 1
-```
 
 - 2395&#46; subarray with equal sum
 ```python
@@ -260,8 +225,155 @@ class Solution:
 
         return final
 ```
+## prefix sum
+- 523&#46; Continuous Subarray Sum, the sum of the elements of the subarray is a multiple of k.
+```python
+    def checkSubarraySum(self, nums: List[int], k: int) -> bool:
+        pre = 0
+        two_sum = {0: -1} ## 
+        for i, v in enumerate(nums):
+            pre += v
+            rem  = pre % k
+            if rem in two_sum:
+                if i - two_sum[rem] >= 2:
+                    return True
+            else: ## need else to avoid overwrite first occurance
+                two_sum[rem] = i
+        return False
+```
 
+- 560&#46; Subarray Sum Equals K, the total number of continuous subarrays whose sum equals to k.
+```python
+    def subarraySum(self, nums: List[int], k: int) -> int:
+        pre = 0
+        dic = {0: 1}
+        res = 0
+        for v in nums:
+            pre += v
+            diff = pre -k
+            count += dic.get(diff, 0)
+            dic[pre] = dic.get(pre, 0) + 1
+        return count
+# or
+            if diff in dic:
+                count += dic[diff]
+            if pre in dic:
+                dic[pre] += 1
+            else:
+                dic[pre] = 1
+```
 ---
+## interval
+- 252&#46; Meeting Rooms I
+```python
+    def canAttendMeetings(self, intervals: List[List[int]) -> bool:
+        intervals.sort()
+        for i in range(1, len(intervals)):
+            if intervals[i][0] < intervals[i-1][1]:
+                return False
+        return True
+```
+
+- 253&#46; Meeting Rooms II
+```python
+    def minMeetingRooms(self, intervals: List[List[int]]) -> int:
+        up_down = []
+        for start, end in intervals:
+            up_down.append((start,  1))
+            up_down.append((end, -1))
+        up_down.sort()
+        res, cur = 0
+        for _, n in up_down:
+            cur += n
+            res = max(cur, res)
+        return res 
+```
+```js
+function minMeetingRooms(intervals: number[][]): number {
+    const upDown: [number, number][] = []
+    for (const [start, end] of intervals) {
+        upDown.push([start, 1])
+        upDown.push([end, -1])
+    }
+    upDown.sort((a, b) => a[0] - b[0] || a[1] - b[1])
+    let [max, cur] = [0, 0]
+    for (const [_, n] of upDown) {
+        cur += n
+        max = Math.max(cur, max)
+    }
+    return max
+
+}
+```
+---
+## recursion
+- 297&#46; Serialize and Deserialize Binary Tree
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Codec:
+    def serialize(self, root):
+        res = []
+        def dfs(node: TreeNode):
+            if node is None:
+                res.append('x')
+                return
+            res.append(str(node.val))
+            dfs(node.left)
+            dfs(node.right)
+        dfs(root)
+        return ','.join(res)
+
+    def deserialize(self, data):
+        res = iter(data.split(','))
+        def dfs(res):
+            cur = next(res)
+            if(cur == 'x'):
+                return None
+            node = TreeNode(int(cur))
+            node.left = dfs(res)
+            node.right = dfs(res)
+            return node
+        return dfs(res)
+```
+```js
+ class TreeNode {
+     val: number
+     left: TreeNode | null
+     right: TreeNode | null
+     constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+         this.val = (val===undefined ? 0 : val)
+         this.left = (left===undefined ? null : left)
+         this.right = (right===undefined ? null : right)
+}
+  
+function serialize(root: TreeNode | null): string {
+    function dfs(node: TreeNode | null) {
+        if (!node) return 'x'
+        return node.val.toString() + ',' + dfs(node.left) + ',' + dfs(node.right)
+    }
+    return dfs(root)
+};
+
+function deserialize(data: string): TreeNode | null {
+    const res = data.split(',')[Symbol.iterator]()
+    function dfs(res: IterableIterator<string>) {
+        const cur = res.next().value
+        if (cur === 'x') return null
+        const node = new TreeNode(parseInt(cur))
+        node.left = dfs(res)
+        node.right = dfs(res)
+        return node
+    }
+
+    return dfs(res)
+}
+```
 
 
 
