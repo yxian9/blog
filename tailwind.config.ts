@@ -54,7 +54,7 @@ export default {
         },
         DEFAULT: {
           css: {
-            maxWidth: "120ch",
+            maxWidth: "84ch",
             a: {
               "@apply cactus-link no-underline": "",
             },
