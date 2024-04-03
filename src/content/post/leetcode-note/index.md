@@ -305,6 +305,60 @@ function minMeetingRooms(intervals: number[][]): number {
 
 }
 ```
+- 236&#46; Lowest Common Ancestor of a Binary Tree
+```python
+def lowestCommonAncestor(self, root, p, q):
+    if root is None or root is p or root is q:
+        return root
+    left = self.lowestCommonAncestor(root.left, p, q)
+    right = self.lowestCommonAncestor(root.right, p, q)
+    if left and right:
+        return root
+    return left or right
+```
+```js
+function lowestCommonAncestor(root: TreeNode | null, p: TreeNode | null, q: TreeNode | null): TreeNode | null {
+    if(root === null || root === p || root === q) return root
+    const l = lowestCommonAncestor(root.left, p, q)
+    const r = lowestCommonAncestor(root.right, p, q)
+    if(l === null) return r
+    if(r === null) return l
+    return root
+}
+```
+- 98&#46; Validate Binary Search Tree
+```python
+def isValidBST(self, root: Optional[TreeNode]) -> bool:
+    def dfs(node, l , r):
+        if node is None:
+            return True
+        if not l < node.val < r: # start with negative condition
+            return False
+        return dfs(node.left, l, node.val) and dfs(node.right, node.val, r)
+    return dfs(root, -inf, inf
+```
+```js
+function isValidBST(root: TreeNode | null): boolean {
+    function dfs(node: TreeNode | null, l: number, r: number){
+        if(node === null) return true
+        if(!( node.val > l && node.val < r)) return false
+        return dfs(node.left, l, node.val) && dfs(node.right, node.val, r)
+    }
+    return dfs(root, -Infinity, Infinity)    
+}
+```
+- 701&#46; Insert into a Binary Search Tree
+```js
+function insertIntoBST(root: TreeNode | null, val: number): TreeNode | null {
+    if(!root) return new TreeNode(val)
+    if( val > root.val){
+        root.right = insertIntoBST(root.right, val)
+    }else{
+        root.left = insertIntoBST(root.left, val)
+    }
+    return root
+}
+```
 ---
 ## recursion
 - 297&#46; Serialize and Deserialize Binary Tree
@@ -374,6 +428,92 @@ function deserialize(data: string): TreeNode | null {
     return dfs(res)
 }
 ```
+---
+## backtracking
+- 22&#46; Generate Parentheses
+```python
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        res = []
+        def dfs(s, l, r):
+            if len(s) == 2 * n:
+                res.append(s)
+                return
+            if l < n:
+                dfs(s + '(', l + 1, r)
+            if r < l:
+                dfs(s + ')', l, r + 1)
+        dfs('', 0, 0)
+        return res
+```
+```js
+function generateParenthesis(n: number): string[] {
+    const res: string[] = []
+    function dfs(path: string[], l: number, r: number) {
+        if (path.length == 2 * n) {
+            res.push(path.join(''))
+            return
+        }
+        if (l < n) {
+            path.push('(')
+            dfs(path, l + 1, r)
+            path.pop()
+        }
+        if (r < l) {
+            path.push(')')
+            dfs(path, l, r + 1)
+            path.pop()
+        }
+    }
+    dfs([], 0, 0)
+    return res
+}
+```
+- 698&#46; Partition to K Equal Sum Subsets
+```python
+class Solution:
+    def canPartitionKSubsets(self, nums: List[int], k: int) -> bool:
+        def dfs(i):
+            if i == len(nums):
+                return True
+            for j in range(k):
+                if j > 0 and cur[j] == cur[j - 1]:
+                    continue
+                cur[j] += nums[i]
+                if cur[j] <= s and dfs(i + 1):
+                    return True
+                cur[j] -= nums[i]
+            return False
 
+        s, mod = divmod(sum(nums), k)
+        if mod:
+            return False
+        cur = [0] * k
+        nums.sort(reverse=True)
+        return dfs(0)
+```
+```js
+function canPartitionKSubsets(nums: number[], k: number): boolean {
+    const tot = nums.reduce((acc, cur) => acc + cur, 0)
+    if (tot % k != 0) return false
+    nums.sort((a, b) => a - b)
+    const n = nums.length;
+    const t = tot / k
+
+    function dfs(idx: number, cur: number, cnt: number, vis: boolean[]): boolean {
+        if (cnt == k) return true
+        if (cur == t) return dfs(n - 1, 0, cnt + 1, vis)
+        for (let i = idx; i >= 0; i--) {
+            if (vis[i] || cur + nums[i] > t) continue
+            vis[i] = true
+            if (dfs(i - 1, cur + nums[i], cnt, vis)) return true
+            vis[i] = false
+            if (cur == 0) return false
+        }
+        return false
+    }
+    return dfs(n - 1, 0, 0, new Array<boolean>(n).fill(false))
+};
+```
 
 
