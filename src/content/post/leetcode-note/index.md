@@ -515,5 +515,105 @@ function canPartitionKSubsets(nums: number[], k: number): boolean {
     return dfs(n - 1, 0, 0, new Array<boolean>(n).fill(false))
 };
 ```
-
-
+---
+## backtracking + dp
+- 139&#46; Word Break
+```js
+function wordBreak(s: string, wordDict: string[]): boolean {
+    const dict = new Set(wordDict);
+    const dp = new Array(s.length + 1).fill(false);
+    dp[0] = true; // Base case: empty string
+    // string dp. 
+    for (let j = 0; j <= s.length; j++) { 
+        for (const item of wordDict) {
+            if( item.length > j) continue
+            if (dp[j - item.length] && dict.has(s.slice(j - item.length, j))) {
+                dp[j] = true; 
+                break
+            }
+        }
+    }
+    return dp[s.length]; 
+}
+```
+```python
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        words = set(wordDict)
+        dp = [False for i in range(len(s) + 1)]
+        dp[0] = True
+        for i in range(len(s) + 1):
+            for word in words:
+                if i >= len(word):
+                    if dp[i - len(word)] and s[i - len(word) : i] in words:
+                        dp[i] = True
+                        break
+        return dp[len(s)
+```
+```python
+def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+  dic = set(wordDict)
+  @cache
+  def dfs(idx):
+      if idx == len(s):
+          return True
+      res = false  
+      for item in dic:
+          if s[idx:].startswith(item):
+              if dfs(idx + len(item)):
+                  res = True
+                  break
+              res = dfs(idx + len(item)) # or
+              if res:
+                  break
+      return res
+  return dfs(0)
+```
+```python
+def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+    dic = set(wordDict)
+    @cache
+    def dfs(idx):
+        if idx == len(s):
+            return True
+        res = False
+        for item in dic:
+            pre = s[idx : idx + len(item)]
+            if pre in dic:
+                if dfs(idx + len(item)):
+                    res = True
+                    break
+                res = dfs(idx + len(item))
+                if res:
+                    break
+        return res
+    return dfs(0)
+```
+- 91&#46; Decode Ways
+```js
+var numDecodings = function(s) {
+    const dict = Array.from(Array(26).keys(), idx => (idx +1).toString())
+    // const set = new Set(dict)
+    const map = new Map()
+    function dfs(idx) {
+        if(idx > s.length) return 0 
+        if(idx === s.length) return 1
+        if(map.has(idx)) return map.get(idx)
+        let res = 0
+        for (let item of dict) {
+            if((idx + item.length) > s.length) continue
+             const pre = s.slice(idx, idx + item.length)
+            
+            if( set.has(pre)){ // !!!
+                res += dfs(idx + item.length);
+            }
+            if (pre === item) { // not set.has(pre)
+                res += dfs(idx + item.length);
+            }
+        }
+        map.set(idx, res)
+        return res
+    }
+    return dfs(0)
+}
+```
+```js
