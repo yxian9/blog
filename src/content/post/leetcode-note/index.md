@@ -264,6 +264,15 @@ class Solution:
 ```
 ---
 ## interval
+ interval function
+```python
+def overlap(a, b):
+    return not (b[1] < a[0] or a[1] < b[0]) 
+```
+```js
+const overlap = (a, b) => !(b[1] < a[0] || a[1] < b[0]);
+```
+
 - 252&#46; Meeting Rooms I
 ```python
     def canAttendMeetings(self, intervals: List[List[int]) -> bool:
@@ -590,7 +599,7 @@ def wordBreak(self, s: str, wordDict: List[str]) -> bool:
 ```
 - 91&#46; Decode Ways
 ```js
-var numDecodings = function(s) {
+function numDecodings(s) {
     const dict = Array.from(Array(26).keys(), idx => (idx +1).toString())
     // const set = new Set(dict)
     const map = new Map()
@@ -616,4 +625,101 @@ var numDecodings = function(s) {
     return dfs(0)
 }
 ```
+- 322&#46; Coin Change
 ```js
+function coinChange(coins: number[], amount: number): number {
+    const dp = new Array(amount + 1).fill(-1)
+    dp[0] = 0
+    for(const item of coins){
+        for( let j = 0; j <= amount; j++){
+            if(  j >= item && dp[j - item] !== -1 ) {
+                if(dp[j] !== -1){
+                    dp[j] = Math.min(dp[j], dp[j - item] + 1)  
+                } else{
+                    dp[j] = dp[j - item ] +1
+                }
+            }
+        }
+    }
+    return dp[amount] 
+}
+```
+- 494&#46; Target Sum
+```js
+function findTargetSumWays(nums: number[], target: number): number {
+    const total = nums.reduce( (acc, cur) => acc + cur, 0)
+    if( Math.abs(total) < Math.abs(target)) return 0
+    if( (total + target) %2 !== 0) return 0
+    const expected = ( total + target) / 2
+    const dp = new Array(expected +1).fill(0)
+    dp[0] = 1
+    for( const item of nums) {
+        for( let j = expected; j >= item; j--){ // >= not =>
+            dp[j] = dp[j] + dp[j - item]
+        }
+    }
+    return dp[expected];
+}
+```
+```python
+    def findTargetSumWays(self, nums: List[int], target: int) -> int:
+        total = sum(nums)
+        if abs(target) > abs(total) :
+            return 0
+        if( (target + total) %2 == 1):
+            return 0
+        expected =  (target + total) // 2
+
+        dp = [1] + [0] * expected
+        for item in nums:
+            for c in range( expected, item -1, -1):
+                dp[c] += dp[ c - item]
+        return dp[expected]
+```
+
+
+- 300&#46; Longest Increasing Subsequence
+```js
+function lengthOfLIS(nums: number[]): number {
+    if(nums.length === 0) return 0
+    const dp = new Array(nums.length).fill(1)
+    for(let i= 0; i < nums.length; i++){
+        const lastItem = nums[i]
+        for(let j = 0; j < i; j++){
+            if(lastItem > nums[j]){
+                if(dp[j] + 1 > dp[i]){
+                    dp[i] = dp[j] + 1
+                }
+                // dp[i] = Math.max(dp[i], dp[j] + 1) // j always less then i, or i-1 
+            }
+        }
+    }
+    return Math.max(...dp)
+}
+```
+- 368&#46; Largest Divisible Subset
+```js
+function largestDivisibleSubset(nums: number[]): number[] {
+    nums.sort((a,b) => a - b)
+    const dp = new Array(nums.length).fill(1)
+    const prev = new Array(nums.length).fill(-1)
+    for (let i = 0; i < nums.length; i++) {
+        const lastItem = nums[i]
+        for (let j = 0; j < i; j++) {
+            if (lastItem % nums[j] === 0) {
+                if (dp[j] + 1 > dp[i]) {
+                    dp[i] = dp[j] + 1
+                    prev[i] = j //bookkeeping
+                }
+            }
+        }
+    }
+    let maxIdx = dp.indexOf(Math.max(...dp))
+    const res = []
+    while( maxIdx !== -1){
+        res.push(nums[maxIdx])
+        maxIdx = prev[maxIdx]
+    }
+    return res
+}
+```
