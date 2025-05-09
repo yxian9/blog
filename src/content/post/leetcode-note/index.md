@@ -180,6 +180,43 @@ class Solution:
                 res[idx] = i
         return len(res)
 ```
+```python
+def lengthOfLIS(self, nums: List[int]) -> int:
+    n = len(nums)
+    dp = [1] * n
+    for right in range(1, n):
+        for left in range(right):
+            if nums[right] > nums[left]:
+                if dp[right] < dp[left] + 1:
+                    dp[right] = dp[left] + 1
+# no dp[right] += 1 or dp[left] += 1
+# use dp[left] + 1 to update dp[right]
+# if right > left, then choose one of dp[left] to add one(to get larger res)
+    return max(dp)
+```
+
+- 674&#46; Longest Continuous Increasing Subsequence
+```python
+    def findLengthOfLCIS(self, nums: List[int]) -> int:
+        # res = 1
+        # cur_length = 1
+        # for right in range(1, len(nums)):
+        #     if nums[right] > nums[right-1]:
+        #         cur_length  += 1
+        #         res = max(res, cur_length)
+        #     else:
+        #         cur_length = 1
+        # return res
+
+        dp = [1] * len(nums)
+        for right in range(1, len(nums)):
+            if nums[right] > nums[right-1]:
+                dp[right] =  dp[right-1] + 1
+            #     res = max(res, cur_length)
+            # else:
+            #     cur_length = 1
+        return max(dp)
+```
 
 - 2099&#46; find a subsequence of nums
  of length k that has the largest sum.
@@ -207,7 +244,7 @@ class Solution:
                     min_idx, min_v = i, v
 
             if val > min_v:
-                res[min_idx] = va
+                res[min_idx] = v
         final = []
         res = Counter(res)
         for i in nums:
@@ -344,7 +381,7 @@ def isValidBST(self, root: Optional[TreeNode]) -> bool:
         if not l < node.val < r: # start with negative condition
             return False
         return dfs(node.left, l, node.val) and dfs(node.right, node.val, r)
-    return dfs(root, -inf, inf
+    return dfs(root, -inf, inf)
 ```
 ```js
 function isValidBST(root: TreeNode | null): boolean {
@@ -369,7 +406,81 @@ function insertIntoBST(root: TreeNode | null, val: number): TreeNode | null {
 }
 ```
 ---
+## linked list
+
+- 203&#46; Remove Linked List Elements
+```python
+    def removeElements(self, head: Optional[ListNode], val: int) -> Optional[ListNode]:
+        dummy = ListNode(0, head)
+        pre, cur = dummy, head
+        while cur:
+            if cur.val == val:
+                pre.next = cur.next
+            else:
+                pre = cur
+            cur = cur.next
+        return dummy.next
+        ## or
+        pre = dummy
+        while pre.next: 
+## no need check pre && pre.next. pre will never be None. 
+## while condition is checked first. dummy garantee pre.next exist 
+            if pre.next.val == val:
+                pre.next = pre.next.next
+            else:
+                pre = pre.next
+        return dummy.next
+
+```
+
+---
 ## recursion
+- 257&#46; Binary Tree Paths
+```python
+    def binaryTreePaths(self, root: Optional[TreeNode]) -> List[str]:
+        res = []
+        def dfs(node, path):
+            if node is None:
+                return
+            path += str(node.val)
+            if node.left is None and node.right is None:
+                res.append(path)
+                return
+            path += '->'
+            dfs(node.left, path)
+            dfs(node.right, path)
+        dfs(root, '')
+        return res
+```
+```python
+    def binaryTreePaths(self, root: Optional[TreeNode]) -> List[str]:
+        res = []
+
+        def dfs(node, path):
+            if node is None:
+                return
+            path.append(str(node.val))
+
+            if node.left is None and node.right is None:
+                res.append("->".join(path))
+                # return
+            choices = []
+            if node.left:
+                choices.append(node.left)
+            if node.right:
+                choices.append(node.right)
+            for choice in choices:
+                dfs(choice, path)
+                path.pop()
+            #or pop here but need to delete return in the append
+            path.pop()
+
+        dfs(root, [])
+        return res
+```
+
+
+
 - 297&#46; Serialize and Deserialize Binary Tree
 ```python
 # Definition for a binary tree node.
@@ -524,8 +635,63 @@ function canPartitionKSubsets(nums: number[], k: number): boolean {
     return dfs(n - 1, 0, 0, new Array<boolean>(n).fill(false))
 };
 ```
+
+- 89&#46; Gray Code
+```python
+    def grayCode(self, n: int) -> List[int]:
+        length, visited = 1 << n , [False] * length
+        path = [0]
+        visited[0] = True
+
+        def dfs(code):
+            if len(path) == length:
+                return True
+            for i in range(n):
+                new_code = code ^ (1 << i)
+
+                if visited[new_code]:
+                    continue
+                path.append(new_code)
+                visited[new_code] = True
+                if dfs(new_code):
+                    break ## or return True
+                visited[new_code] = False
+                path.pop()
+            return True ## no need if pre return
+         
+        dfs(0)
+        return path
+```
+
 ---
 ## backtracking + dp
+- 124&#46; Binary Tree Maximum Path Sum
+```python
+    def maxPathSum(self, root: Optional[TreeNode]) -> int:
+        res = -inf
+        def dfs(node):
+            nonlocal res
+            if node is None:
+                return 0
+            left = max(dfs(node.left), 0)
+            right = max(dfs(node.right), 0)
+            res = max(res, node.val + left + right)
+            return node.val + max(left, right)
+        dfs(root)
+        return res
+        # or 
+        def dfs(node):
+            if node is None:
+                return 0
+            l = dfs(node.left)
+            r = dfs(node.right)
+            nonlocal ans
+            ans = max(ans, l + r + node.val)
+            return max(max(l, r) + node.val, 0)
+        dfs(root)
+        return ans
+```
+
 - 139&#46; Word Break
 ```js
 function wordBreak(s: string, wordDict: string[]): boolean {
@@ -644,6 +810,64 @@ function coinChange(coins: number[], amount: number): number {
     return dp[amount] 
 }
 ```
+```python
+def coinChange(self, coins: List[int], amount: int) -> int:
+    # dp = [0] + [inf] * amount
+    dp = [0] + [amount + 1] * amount
+    for item in coins:
+        for j in range(item, amount + 1):
+            if dp[j] > dp[j - item] + 1:
+                dp[j] = dp[j - item] + 1
+    if dp[amount] == amount + 1:
+        return -1
+    return dp[amount]
+```
+```ts
+function coinChange(coins: number[], amount: number): number {
+    const dp = new Array(amount + 1).fill(amount + 1)
+    dp[0] = 0
+    for (const item of coins) {
+        for (let j = item; j <= amount; j++) {
+          // dp[j] could be uninitial or a larger one
+            if (dp[j] > dp[j - item] + 1) { 
+                dp[j] = dp[j - item] + 1
+            }
+        }
+    }
+    if (dp[amount] === amount + 1) return -1
+    return dp[amount]
+}
+```
+```ts
+function coinChange(coins: number[], amount: number): number {
+    const memo = new Map<number,number>()
+
+    function dfs(depth: number, total: number){
+        if(memo.has(total)) return memo.get(total)
+        if(total === amount) {
+            return depth // can not memo here 
+        } 
+        if(total > amount){
+            return -1
+        }
+        let ans = Infinity
+        for(const item of coins){
+            const res = dfs(depth + 1, total + item)
+            if( res !== -1 && ans > res){
+                ans = res
+            }
+        }
+        memo.set(total,ans) 
+        // memo is give current total, additional coins need
+        // not mini coins need to get current total.
+        return ans
+    }
+    const ans = dfs(0,0)
+
+    return ans ===Infinity ? -1: ans
+    
+};
+```
 - 494&#46; Target Sum
 ```js
 function findTargetSumWays(nums: number[], target: number): number {
@@ -723,3 +947,455 @@ function largestDivisibleSubset(nums: number[]): number[] {
     return res
 }
 ```
+- 62&#46; Unique Paths
+```js
+var uniquePaths = function (m, n) {
+    const dp = Array.from({ length: m }, () => new Array(n).fill(0))
+    for (let i = 0; i < m; i++) {
+        dp[i][0] = 1
+    }
+    for (let j = 0; j < n; j++) {
+        dp[0][j] = 1
+    }
+    for (let i = 1; i < m; i++) {
+        for (let j = 1; j < n; j++) {
+            dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+        }
+    }
+    return dp[m - 1][n - 1]
+}
+```
+```go
+func uniquePaths(m int, n int) int {
+	dp := make([][]int, m)
+	for i := range(dp) {
+		dp[i] = make([]int, n)
+	}
+	for i := range(dp) {
+		for j := range(dp[0]) {
+			if i == 0 || j == 0 {
+				dp[i][j] = 1
+				continue
+			}
+			dp[i][j] = dp[i-1][j] + dp[i][j-1]
+		}
+	}
+	return dp[m-1][n-1]
+}
+```
+- 63&#46; Unique Paths II
+```go
+func uniquePathsWithObstacles(obstacleGrid [][]int) int {
+	m, n := len(obstacleGrid), len(obstacleGrid[0])
+	dp := make([][]int, m)
+	for i := range dp {
+		dp[i] = make([]int, n)
+	}
+
+	for i := range dp {
+		if obstacleGrid[i][0] == 1 {
+			break
+		}
+		dp[i][0] = 1
+	}
+	for j := range dp[0] {
+		if obstacleGrid[0][j] == 1 {
+			break
+		}
+		dp[0][j] = 1
+	}
+
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
+			if obstacleGrid[i][j] == 0 {
+				dp[i][j] = dp[i-1][j] + dp[i][j-1]
+			}
+		}
+	}
+	return dp[m-1][n-1]
+}
+```
+
+- 64&#46; Minimum Path Sum
+```python
+class Solution:
+    def minPathSum(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        dp = [[0] * n for _ in range(m)]
+        for i in range(m):
+            for j in range(n):
+                if i == 0 or j == 0:
+                    dp[i][j] = grid[i][j]
+
+        for i in range(m):
+            for j in range(n):
+                if i == 0 and j == 0:
+                    continue  # need to avoid update [0][0] item
+                if i == 0 and j > 0:
+                    dp[i][j] += dp[i][j - 1]
+                elif j == 0 and i > 0:
+                    dp[i][j] += dp[i - 1][j]
+                else:
+                    dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j]
+        return dp[-1][-1]
+# or 
+    def minPathSum(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        dp = [[0] * n for _ in range(m)]
+        for i in range(m):
+            for j in range(n):
+                if i == 0 and j == 0:
+                    dp[i][j] = grid[i][j]
+                elif i == 0:
+                    dp[i][j] = grid[i][j] + dp[i][j - 1]  ## set and overwrite same time
+                elif j == 0:
+                    dp[i][j] = grid[i][j] + dp[i - 1][j] 
+                else:
+                    dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j]
+        return dp[-1][-1]
+```
+
+- 198&#46; House Robber
+```python
+    def rob(self, nums: List[int]) -> int:
+        dp = [0] + [0] * len(nums)
+        dp[1] = nums[0] # the nums and dp has offset 1
+        for i in range(2, len(nums) + 1):
+            dp[i] = max(dp[i - 1], dp[i - 2] + nums[i - 1])
+        return dp[len(nums)]
+```
+
+
+---
+## stack
+- 227&#46; Basic Calculator II
+```python
+    def calculate(self, s: str) -> int:
+        stack, sign, num = [], "+", 0
+        for i in range(len(s) + 1):
+            if i < len(s):
+                c = s[i]
+                if c == " ":
+                    continue
+                if c.isdigit():
+                    num = 10 * num + int(c)
+
+            if (not c.isdigit()) or i == len(s):
+                match sign:
+                    case "+":
+                        stack.append(num)
+                    case "-":
+                        stack.append(-num)
+                    case "*":
+                        stack[-1] = stack[-1] * num
+                    case "/":
+                        stack[-1] = int(stack[-1] / num)
+                num = 0
+                sign = c
+        return sum(stack)
+```
+
+- 239&#46; Sliding Window Maximum
+```python
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        res = []
+        que = deque()
+        for i, v in enumerate(nums):
+            while que and nums[que[-1]] < v:
+                que.pop()
+            que.append(i)
+            if i - que[0] >= k:
+                que.popleft()
+            if i >= k - 1:
+                res.append(nums[que[0]])
+        return res
+```
+```js
+function maxSlidingWindow(nums: number[], k: number): number[] {
+    const ans: number[] = []
+    const queue: number[] = []
+    let j = 0
+    for(let i =0; i< nums.length; i++){
+        while( queue.length >j && nums[i] > queue[queue.length-1]  ){
+            queue.pop()
+        }
+        queue.push(nums[i])
+        if( i >= k-1){
+            ans.push(queue[j])
+            if(nums[i - k +1] === queue[j]){
+                j++  // queue.shift()
+            }
+        }
+    }
+   return ans 
+}
+```
+- 416&#46; Partition Equal Subset Sum
+```js
+function canPartition(nums: number[]): boolean {
+    const total = nums.reduce((a, b) => a + b, 0)
+    if (total % 2 === 1) return false
+    const target = total >> 1
+    const dp = new Array(target + 1).fill(false)
+    dp[0] = true
+    for (const item of nums) {
+        for (let j = target; j >= item; j--) {
+            if (dp[j - item] ) {
+                dp[j] = true
+            }
+            // or 
+            if (dp[j - item] + item > dp[j]) {
+                dp[j] = dp[j - item] + item
+            }
+            //or 
+            dp[j] = Math.max(dp[j] , dp[j- item] + item)
+        }
+    }
+    return dp[target] 
+}
+```
+```python
+def canPartition(self, nums: List[int]) -> bool:
+    @cache
+    def dfs(start, cum):
+        if cum == target:
+            return True
+        for i in range(start, len(nums)):
+            cur = cum + nums[i]
+            if cur <= target and dfs(i + 1, cur):
+                return True
+        return False
+    return dfs(0, 0)
+```
+```python
+    def canPartition(self, nums: List[int]) -> bool:
+        total = sum(nums)
+        if total % 2:
+            return False
+        target = total >> 1
+        dp = [True] + [False] * target
+        for item in nums:
+            for j in range(target, item - 1, -1):
+                if dp[j - item]:
+                    dp[j] = True
+        return dp[target]
+``` 
+----
+## bfs
+- 199&#46; Binary Tree Right Side View
+```python
+    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        res = []
+        que = deque([root])
+        while que:
+            size = len(que)
+            for i in range(size):
+                node = que.popleft()
+                if i == size - 1:
+                    res.append(node.val)
+                if node.left:
+                    que.append(node.left)
+                if node.right:
+                    que.append(node.right)
+        ## or
+        while queue:
+            res.append(queue[0].val)
+            for _ in range(len(queue)):
+                node = queue.popleft()
+                if node.right:
+                    queue.append(node.right)
+                if node.left:
+                    queue.append(node.left)
+        return res
+```
+```js
+function rightSideView(root: TreeNode | null): number[] {
+    const res : number[] = []
+    function dfs(node: TreeNode | null, depth: number){
+        if(!node) return
+        if(depth === res.length){
+            res.push(node.val)
+        }
+        dfs(node.right, depth + 1)
+        dfs(node.left, depth + 1) // res is mutated. when go to left, res is increased.
+    }
+    dfs(root, 0)
+    return res
+}
+```
+
+- 111&#46; Minimum Depth of Binary Tree
+```python
+    def minDepth(self, root: Optional[TreeNode]) -> int:
+        if not root:
+            return 0
+        que, depth = deque([root]), 0
+        while que:
+            depth += 1
+            for _ in range(len(que)):
+                node = que.popleft()
+                if not node.left and not node.right:
+                    return depth
+                if node.left:
+                    que.append(node.left)
+                if node.right:
+                    que.append(node.right)
+        # return depth
+```
+```python
+    def minDepth(self, root: Optional[TreeNode]) -> int:
+        if not root:
+            return 0
+        if root.left and root.right:
+            return 1 + min(self.minDepth(root.left), self.minDepth(root.right))
+        elif root.left:
+            return 1 + self.minDepth(root.left)
+        elif root.right:
+            return 1 + self.minDepth(root.right)
+        else:
+            return 
+```
+```js
+var minDepth = function (root) {
+    if (!root) return 0
+    const l = minDepth(root.left)
+    const r = minDepth(root.right)
+    // if (l === 0) return minDepth(root.right)
+    // if (r === 0) return minDepth(root.left)
+    if( l === 0 && r === 0 ){// must check this first
+        return 1
+    }else if(r === 0){
+        return l + 1
+    }else if(l === 0){
+       return r + 1
+    }else{
+         return Math.min(l, r) + 1
+    }
+}
+var minDepth = function (root) {
+    if (!root) return 0
+    const l = minDepth(root.left)
+    const r = minDepth(root.right)
+    if (l > 0 && r > 0) {
+        return Math.min(l, r) + 1
+    } else if (r === 0) {
+        return l + 1
+    } else if (l === 0) {
+        return r + 1
+    } else {
+        return 1 // base case to build up, interact with 0
+    }
+}
+
+var minDepth = function (root) {
+    let res = Infinity
+    function dfs(node, depth) {
+        if (!node) return
+        depth++
+        if (!node.left && !node.right) {
+            res = Math.min(res, depth )
+        }
+        dfs(node.left, depth )
+        dfs(node.right, depth )
+    }
+    dfs(root, 0)
+    return res === Infinity ? 0: res
+}
+```
+
+---
+##graph
+- 133&#46; Clone Graph
+```python
+    def cloneGraph(self, node: 'Node') -> 'Node':
+        if not node:
+            return None
+        visited = {}
+        def dfs(node):
+            if node in visited:
+                return visited[node]
+            clone = Node(node.val, [])
+            visited[node] = clone
+            for n in node.neighbors:
+                clone.neighbors.append(dfs(n))
+            return clone
+        return dfs(node)
+```
+- 1197&#46; Minimum Knight Moves
+```js
+function minKnightMoves(x: number, y: number): number {
+    let res = 0
+    const seen = new Set<string>('0,0')
+    let queue = new Array<[number, number]>([0 ,0])
+    while( queue.length > 0){
+        const q = []
+        let len = queue.length
+        while(len--){
+            const [r, c] = queue.pop()
+            if (r === x && c === y) return res
+            for( const [dx, dy] of move){
+                const item : [number, number] = [r + dx, c + dy]
+                const id = `${r + dx},${c + dy}`
+               if(seen.has(id)) continue 
+               seen.add(id)
+               q.push(item)
+            }
+        }
+        queue = q
+        res++
+    }
+    return res
+```
+- 286&#46; Walls and Gates
+```python
+    def wallsAndGates(self, rooms: List[List[int]]) -> None:
+        if not rooms:
+            return
+        m, n = len(rooms), len(rooms[0])
+        que = deque()
+        for i in range(m):
+            for j in range(n):
+                if rooms[i][j] == 0:
+                    que.append((i, j))
+        while que:
+            x, y = que.popleft()
+            for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < m and 0 <= ny < n and rooms[nx][ny] == 2147483647:
+                    rooms[nx][ny] = rooms[x][y] + 1
+                    que.append((nx, ny))
+```
+```js
+function wallsAndGates(rooms: number[][]): void {
+    const m = rooms.length
+    const n = rooms[0].length
+    const que: number[][] = []
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            if (rooms[i][j] === 0) {
+                que.push([i, j])
+            }
+        }
+    }
+    const dir = [[0, 1],[1, 0], [0, -1], [-1, 0]]
+    while (que.length) {
+        let len = que.length  // not necessary
+        while (len--) { // not necessary
+            const [r, c] = que.shift()
+            for (const [dx, dy] of dir) {
+                const newX = r + dx
+                const newY = c + dy
+                if (newX < 0 || newX > m - 1 || newY < 0 || newY > n - 1) continue
+                if (rooms[newX][newY] === 2147483647) {
+                    rooms[newX][newY] = rooms[r][c] + 1
+                    que.push([newX, newY])
+                }
+            }
+        }
+    }
+};
+```
+
+
